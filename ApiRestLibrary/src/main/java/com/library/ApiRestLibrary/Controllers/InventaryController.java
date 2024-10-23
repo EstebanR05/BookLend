@@ -38,7 +38,7 @@ public class InventaryController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Inventary> createInventary(@RequestBody Inventary inventary) {
+    public ResponseEntity<Inventary> createInventary(@ModelAttribute Inventary inventary) {
         try {
             Inventary response = inventaryService.createInventary(inventary);
             return (response != null) ? new ResponseEntity<>(response, HttpStatus.OK) : ResponseEntity.notFound().build();

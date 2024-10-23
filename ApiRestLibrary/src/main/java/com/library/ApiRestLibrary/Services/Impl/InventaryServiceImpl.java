@@ -72,9 +72,7 @@ public class InventaryServiceImpl implements InventaryService {
             response.setName(inventary.getName());
             response.setAuthor(inventary.getAuthor());
             response.setCreate_at(inventary.getCreate_at());
-            inventaryRepository.save(response);
-
-            return response;
+            return inventaryRepository.save(response);
         } catch (Exception e) {
             throw new RuntimeException("can not update inventary: " + e.getMessage());
         }
