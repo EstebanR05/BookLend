@@ -50,14 +50,14 @@ public class FileServiceImpl implements FileService {
             Path path = Paths.get(mediaLocation + "/" + newFileName);
             Files.write(path, bytes);
 
-            return "file uploaded successfully";
+            return newFileName;
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
 
     @Override
-    public UrlResource getFile(String filename) throws Exception {
+    public MultipartFile getFile(String filename) throws Exception {
         try {
             Path file = Paths.get(mediaLocation + "/" + filename);
             UrlResource resource = new UrlResource(file.toUri());
@@ -66,7 +66,7 @@ public class FileServiceImpl implements FileService {
                 throw new RuntimeException(filename);
             }
 
-            return resource;
+            return new FileMultipart(file);
         } catch (RuntimeException e) {
             throw new RuntimeException("could not read file " + filename);
         }

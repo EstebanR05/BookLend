@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class InventaryController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Inventary> updateInventary(@PathVariable long id, @RequestBody Inventary inventary) {
+    public ResponseEntity<Inventary> updateInventary(@PathVariable long id, @ModelAttribute Inventary inventary) {
         try {
             Inventary response = inventaryService.updateInventary(inventary, id);
             return (response != null) ? new ResponseEntity<>(response, HttpStatus.OK) : ResponseEntity.notFound().build();
