@@ -3,11 +3,15 @@ package com.library.ApiRestLibrary.Controllers;
 import com.library.ApiRestLibrary.Entity.Inventary;
 import com.library.ApiRestLibrary.Services.InventaryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.file.Files;
 import java.util.List;
 
 @RestController
@@ -34,6 +38,17 @@ public class InventaryController {
             return (inventary != null) ? new ResponseEntity<>(inventary, HttpStatus.OK) : ResponseEntity.notFound().build();
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/getFile/{fileName:.*}")
+    public ResponseEntity<UrlResource> getFileByInventary(@PathVariable String fileName) {
+        try{
+            UrlResource file = inventaryService.getFileByInventary(fileName);
+            String contentType = Files.probeContentType(file.getFile().toPath());
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, contentType).body(file);
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -57,7 +57,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public MultipartFile getFile(String filename) throws Exception {
+    public UrlResource getFile(String filename) throws Exception {
         try {
             Path file = Paths.get(mediaLocation + "/" + filename);
             UrlResource resource = new UrlResource(file.toUri());
@@ -66,7 +66,8 @@ public class FileServiceImpl implements FileService {
                 throw new RuntimeException(filename);
             }
 
-            return new FileMultipart(file);
+            //return new FileMultipart(file);
+            return resource;
         } catch (RuntimeException e) {
             throw new RuntimeException("could not read file " + filename);
         }

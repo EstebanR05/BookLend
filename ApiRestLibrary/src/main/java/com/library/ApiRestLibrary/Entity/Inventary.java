@@ -3,6 +3,7 @@ package com.library.ApiRestLibrary.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.core.io.UrlResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;

@@ -5,12 +5,10 @@ import com.library.ApiRestLibrary.Repositories.InventaryRepository;
 import com.library.ApiRestLibrary.Services.FileService;
 import com.library.ApiRestLibrary.Services.InventaryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class InventaryServiceImpl implements InventaryService {
@@ -23,22 +21,21 @@ public class InventaryServiceImpl implements InventaryService {
 
     @Override
     public List<Inventary> getAllInventaries() {
-        return inventaryRepository.findAll().stream().peek(i -> {
-            if (i.getImg() != null) {
-                bindingFileImg(i.getImg(), i);
-            }
-        }).collect(Collectors.toList());
+        return inventaryRepository.findAll();
     }
 
     @Override
     public Inventary getInventaryById(long id) {
-        Optional<Inventary> inventary = inventaryRepository.findById(id);
+        return inventaryRepository.findById(id).orElse(null);
+    }
 
-        if (inventary.isPresent() && inventary.get().getImg() != null) {
-            bindingFileImg(inventary.get().getImg(), inventary.get());
+    @Override
+    public UrlResource getFileByInventary(String name) {
+        try {
+            return fileService.getFile(name);
+        } catch (Exception e) {
+            throw new RuntimeException("can not get file by name: " + e.getMessage());
         }
-
-        return inventary.orElse(null);
     }
 
     @Override
@@ -49,8 +46,8 @@ public class InventaryServiceImpl implements InventaryService {
             }
 
             validatedInventary(inventary);
-            final String fileName = fileService.UploadFile(inventary.getFile());
-            inventary.setImg(fileName);
+            inventary.setImg(fileService.UploadFile(inventary.getFile()));
+            inventary.setFile(null);
             return inventaryRepository.save(inventary);
         } catch (Exception e) {
             throw new RuntimeException("can not create inventary: " + e.getMessage());
@@ -88,15 +85,6 @@ public class InventaryServiceImpl implements InventaryService {
             return true;
         }catch (Exception e){
             throw new RuntimeException("can not delete inventary: " + e.getMessage());
-        }
-    }
-
-    private void bindingFileImg(String img, Inventary inventary) {
-        try {
-            MultipartFile file = fileService.getFile(img);
-            inventary.setFile(file);
-        } catch (Exception e) {
-            throw new RuntimeException("can not do inventary: " + e.getMessage());
         }
     }
 

@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface FileService {
     String UploadFile(MultipartFile file) throws Exception;
 
-    MultipartFile getFile(String filename) throws Exception;
+    UrlResource getFile(String filename) throws Exception;
 
     boolean deleteFile(String filename) throws Exception;
 }
